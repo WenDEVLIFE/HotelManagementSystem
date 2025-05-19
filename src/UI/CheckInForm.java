@@ -4,7 +4,22 @@
  */
 package UI;
 
+import database_function.BookHotelSQL;
+import database_function.RegisterService;
+import mdoel.AccountModel;
+
+import javax.swing.text.DateFormatter;
 import java.awt.Color;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,13 +27,20 @@ import java.awt.Color;
  */
 public class CheckInForm extends javax.swing.JFrame {
 
+    List<AccountModel> accountList;
+    List<String> customerAccounts;
+    static String roomID;
     /**
      * Creates new form CheckInForm
      */
-    public CheckInForm() {
+    public CheckInForm(String roomID) {
         initComponents();
+        CheckInForm.roomID = roomID;
         getContentPane().setBackground(new Color(193, 77, 62));
         getContentPane().setBackground(new Color(87, 31, 68));
+        RoomNumberID.setEnabled(false);
+        RoomNumberID.setText(roomID);
+        LoadAccounts();
     }
 
     /**
@@ -32,27 +54,27 @@ public class CheckInForm extends javax.swing.JFrame {
 
         jSpinner1 = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        customerNameField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        dateInField = new javax.swing.JTextField();
+        RoomNumberID = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        noOfPersonField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        totalField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        dateOutField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        advancePaymentField = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        noOfNightsField = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
+        balanceField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        accounts = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -62,7 +84,7 @@ public class CheckInForm extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png"))); // NOI18N
         jLabel1.setText("                        ");
 
-        jTextField1.setToolTipText("");
+        customerNameField.setToolTipText("");
 
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -72,36 +94,36 @@ public class CheckInForm extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Customer Name");
 
-        jTextField2.setToolTipText("");
+        dateInField.setToolTipText("");
 
-        jTextField3.setToolTipText("");
+        RoomNumberID.setToolTipText("");
 
         jLabel4.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Total");
 
-        jTextField4.setToolTipText("");
+        noOfPersonField.setToolTipText("");
 
         jLabel5.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("No. of Person");
 
-        jTextField5.setToolTipText("");
+        totalField.setToolTipText("");
 
         jLabel6.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText(" Date In");
 
-        jTextField6.setToolTipText("");
+        dateOutField.setToolTipText("");
 
         jLabel7.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Date Out");
 
-        jTextField7.setToolTipText("");
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+        advancePaymentField.setToolTipText("");
+        advancePaymentField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
+                advancePaymentFieldActionPerformed(evt);
             }
         });
 
@@ -109,7 +131,7 @@ public class CheckInForm extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("No. of Nights");
 
-        jTextField8.setToolTipText("");
+        noOfNightsField.setToolTipText("");
 
         jLabel9.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -119,10 +141,10 @@ public class CheckInForm extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("Balance");
 
-        jTextField9.setToolTipText("");
-        jTextField9.addActionListener(new java.awt.event.ActionListener() {
+        balanceField.setToolTipText("");
+        balanceField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField9ActionPerformed(evt);
+                balanceFieldActionPerformed(evt);
             }
         });
 
@@ -146,7 +168,7 @@ public class CheckInForm extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        accounts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel11.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
@@ -170,28 +192,28 @@ public class CheckInForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(77, 77, 77)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                    .addComponent(totalField, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                    .addComponent(noOfPersonField, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                    .addComponent(RoomNumberID, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1)
+                    .addComponent(customerNameField)
                     .addComponent(jLabel11)
                     .addComponent(jLabel5)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(accounts, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateOutField, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateInField, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel8)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(noOfNightsField, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(advancePaymentField, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(balanceField, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(52, 52, 52))
         );
         layout.setVerticalGroup(
@@ -205,24 +227,24 @@ public class CheckInForm extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dateInField, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(accounts, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dateOutField, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(customerNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(noOfNightsField, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(RoomNumberID, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel8)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -233,16 +255,16 @@ public class CheckInForm extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(advancePaymentField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(noOfPersonField, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jLabel4))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(balanceField, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(71, 71, 71)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -253,20 +275,77 @@ public class CheckInForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+    private void advancePaymentFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancePaymentFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
+    }//GEN-LAST:event_advancePaymentFieldActionPerformed
 
-    private void jTextField9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField9ActionPerformed
+    private void balanceFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_balanceFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField9ActionPerformed
+    }//GEN-LAST:event_balanceFieldActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    
+   // This is for the adding check in
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+
+        String customerName = customerNameField.getText();
+        String roomNumber = RoomNumberID.getText();
+        String dateIn = dateInField.getText();
+        String dateOut = dateOutField.getText();
+        String noOfPerson = noOfPersonField.getText();
+        String noOfNights = noOfNightsField.getText();
+        String advancePayment = advancePaymentField.getText();
+        String total = totalField.getText();
+        String balance = balanceField.getText();
+        String accountName = (String) accounts.getSelectedItem();
+
+
+ 
+        try {
+                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateFormat.setLenient(false);
+            dateFormat.parse(dateIn);
+            dateFormat.parse(dateOut);
+
+            if (customerName.isEmpty() || roomNumber.isEmpty() || dateIn.isEmpty() || dateOut.isEmpty() || noOfPerson.isEmpty() || noOfNights.isEmpty() || advancePayment.isEmpty() || total.isEmpty() || balance.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            }
+            if( dateFormat.parse(dateIn).after(dateFormat.parse(dateOut))) {
+                JOptionPane.showMessageDialog(this, "Date In cannot be after Date Out.");
+            } else if (!noOfPerson.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Number of persons must be a number.");
+            } else if (!noOfNights.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Number of nights must be a number.");
+            } else if (!advancePayment.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Advance payment must be a valid amount.");
+            } else if (!total.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Total amount must be a valid amount.");
+            } else if (!balance.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "Balance must be a valid amount.");
+            }
+            else {
+                // Call the method to add check-in details to the database
+                // Add your database insertion logic here
+                JOptionPane.showMessageDialog(this, "Check-in details added successfully.");
+                Map<String, Object> checkInDetails = new HashMap<>();
+                checkInDetails.put("customerName", customerName);
+                checkInDetails.put("roomNumber", roomNumber);
+                checkInDetails.put("dateIn", dateIn);
+                checkInDetails.put("dateOut", dateOut);
+                checkInDetails.put("noOfPerson", noOfPerson);
+                checkInDetails.put("noOfNights", noOfNights);
+                checkInDetails.put("advancePayment", advancePayment);
+                checkInDetails.put("total", total);
+                checkInDetails.put("balance", balance);
+                checkInDetails.put("accountName", accountName);
+                BookHotelSQL.getInstance().addCheckInDetails(checkInDetails,this);
+            }
+        }  catch (ParseException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -298,16 +377,33 @@ public class CheckInForm extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                new CheckInForm().setVisible(true);
+                new CheckInForm(roomID).setVisible(true);
             }
         });
     }
 
+    void LoadAccounts(){
+
+         accountList = RegisterService.getInstance().getAllUsers();
+         customerAccounts = new ArrayList<>();
+        for (AccountModel account : accountList) {
+            customerAccounts.add(account.getUsername());
+         }
+        accounts.setModel(new DefaultComboBoxModel<>(customerAccounts.toArray(new String[0])));
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField RoomNumberID;
+    private javax.swing.JComboBox<String> accounts;
+    private javax.swing.JTextField advancePaymentField;
+    private javax.swing.JTextField balanceField;
+    private javax.swing.JTextField customerNameField;
+    private javax.swing.JTextField dateInField;
+    private javax.swing.JTextField dateOutField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -320,14 +416,8 @@ public class CheckInForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
+    private javax.swing.JTextField noOfNightsField;
+    private javax.swing.JTextField noOfPersonField;
+    private javax.swing.JTextField totalField;
     // End of variables declaration//GEN-END:variables
 }

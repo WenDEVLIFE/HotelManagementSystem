@@ -379,8 +379,23 @@ public class AdminFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    // This will select for check in
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+         int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow != -1) {
+            String roomID = (String) jTable1.getValueAt(selectedRow, 0);
+            String roomStatus = (String) jTable1.getValueAt(selectedRow, 1);
+            if (roomStatus.equals("Available")) {
+                CheckInForm checkInForm = new CheckInForm(roomID);
+                checkInForm.setVisible(true);
+                checkInForm.setResizable(false);
+                checkInForm.setLocationRelativeTo(null);
+                this.dispose();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Room is not available for check-in.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButton10ActionPerformed
 
     // This will add the rooms
@@ -437,8 +452,6 @@ public class AdminFrame extends javax.swing.JFrame {
 
     // This will navigate to reports
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        // TODO add your handling code here:
         Report reports = new Report();
         reports.setVisible(true);
         reports.setResizable(false);
