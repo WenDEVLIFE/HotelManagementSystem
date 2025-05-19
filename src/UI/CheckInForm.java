@@ -6,9 +6,8 @@ package UI;
 
 import database_function.BookHotelSQL;
 import database_function.RegisterService;
-import mdoel.AccountModel;
+import model.AccountModel;
 
-import javax.swing.text.DateFormatter;
 import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 

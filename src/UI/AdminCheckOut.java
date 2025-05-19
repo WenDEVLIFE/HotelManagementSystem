@@ -4,6 +4,8 @@
  */
 package UI;
 
+import java.awt.*;
+
 /**
  *
  * @author Administrator
@@ -16,6 +18,7 @@ public class AdminCheckOut extends javax.swing.JFrame {
     public AdminCheckOut() {
         initComponents();
         setTitle( "All Check Out");
+        getContentPane().setBackground(new Color(87, 31, 68));
     }
 
     /**

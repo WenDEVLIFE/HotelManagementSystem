@@ -6,7 +6,7 @@ package UI;
 
 import database_function.BookHotelSQL;
 import database_function.RegisterService;
-import mdoel.AccountModel;
+import model.AccountModel;
 
 import javax.swing.*;
 import java.awt.Color;

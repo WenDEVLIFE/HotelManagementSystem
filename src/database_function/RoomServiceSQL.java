@@ -1,6 +1,6 @@
 package database_function;
 
-import mdoel.RoomModel;
+import model.RoomModel;
 
 import javax.swing.*;
 import java.util.ArrayList;

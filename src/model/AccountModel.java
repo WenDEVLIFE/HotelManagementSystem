@@ -1,4 +1,4 @@
-package mdoel;
+package model;
 
 public class AccountModel {
 

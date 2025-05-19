@@ -1,10 +1,9 @@
 package database_function;
 
-import UI.SignUp;
 import java.util.List;
 
 import javax.swing.*;
-import mdoel.AccountModel;
+import model.AccountModel;
 
 public class RegisterService {
 

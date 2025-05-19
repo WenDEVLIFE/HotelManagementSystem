@@ -4,6 +4,8 @@
  */
 package UI;
 
+import java.awt.*;
+
 /**
  *
  * @author Administrator
@@ -16,6 +18,7 @@ public class AdminCheckIn extends javax.swing.JFrame {
     public AdminCheckIn() {
         initComponents();
         setTitle("All Check Ins");
+        getContentPane().setBackground(new Color(87, 31, 68));
     }
 
     /**

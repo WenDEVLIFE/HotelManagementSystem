@@ -5,7 +5,7 @@
 package UI;
 
 import database_function.RoomServiceSQL;
-import mdoel.RoomModel;
+import model.RoomModel;
 
 import javax.swing.table.DefaultTableModel;
 import java.awt.Color;

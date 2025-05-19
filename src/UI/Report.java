@@ -4,7 +4,12 @@
  */
 package UI;
 
+import model.ReportModel;
+
+import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -12,12 +17,20 @@ import java.awt.Color;
  */
 public class Report extends javax.swing.JFrame {
 
+    List<ReportModel> reportList = new ArrayList<>();
+    DefaultTableModel model;
+
     /**
      * Creates new form Report
      */
     public Report() {
         initComponents();
               getContentPane().setBackground(new Color(87, 31, 68));
+              setTitle("Reports");
+              String [] columnNames = {"ID", "Description", "Date", "Time"};
+                model = new DefaultTableModel(columnNames, 0);
+                jTable1.setModel(model);
+                loadReports();
     }
 
     /**
@@ -137,6 +150,13 @@ public class Report extends javax.swing.JFrame {
                 new Report().setVisible(true);
             }
         });
+    }
+
+    private void loadReports() {
+        reportList = database_function.ReportSQL.getInstance().getReports();
+        for (ReportModel report : reportList) {
+            model.addRow(new Object[]{report.getReportId(), report.getDescription(), report.getDate(), report.getTime()});
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
