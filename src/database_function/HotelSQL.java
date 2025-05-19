@@ -8,6 +8,6 @@ package database_function;
  *
  * @author Administrator
  */
-public class AddHotelSQL {
+public class HotelSQL {
     
 }

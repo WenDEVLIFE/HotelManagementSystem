@@ -4,6 +4,8 @@
  */
 package database_function;
 
+import java.sql.Connection;
+
 /**
  *
  * @author Administrator
@@ -12,6 +14,19 @@ public class MYSQLiteConnection {
      static String databaseUrl = "jdbc:mysql://localhost:3306/hoteldatabase";
     static String user ="root";
     static String password = "";
+
+    public static Connection getConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = java.sql.DriverManager.getConnection(databaseUrl, user, password);
+            System.out.println("Connection established successfully");
+        } catch (Exception e) {
+            System.out.println("Error establishing connection: " + e.getMessage());
+            e.printStackTrace(); // Print stack trace for debugging
+        }
+        return connection;
+    }
 
 
     void intializeConnection() {

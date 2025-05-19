@@ -73,6 +73,11 @@ public class Login extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("SIGN UP");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(87, 31, 68));
         jButton2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
@@ -178,6 +183,15 @@ public class Login extends javax.swing.JFrame {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    // This will navigate to the sign up
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       SignUp signUp = new SignUp();
+         signUp.setVisible(true);
+            signUp.setResizable(false);
+            signUp.setLocationRelativeTo(null);
+            this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
