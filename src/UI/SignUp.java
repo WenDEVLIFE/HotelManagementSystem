@@ -224,7 +224,7 @@ public class SignUp extends javax.swing.JFrame {
             return;
         }
 
-        RegisterService.getInstance().InsertUser(username, password);
+        RegisterService.getInstance().InsertUser(username, password, "user");
         Login login = new Login();
         login.setVisible(true);
         login.setResizable(false);

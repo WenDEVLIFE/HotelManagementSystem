@@ -4,7 +4,20 @@
  */
 package UI;
 
+import database_function.RegisterService;
+
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import mdoel.AccountModel;
 
 /**
  *
@@ -12,12 +25,20 @@ import java.awt.Color;
  */
 public class ManageAccount extends javax.swing.JFrame {
 
+    DefaultTableModel model;
+    List <AccountModel> userList = new ArrayList<>();
     /**
      * Creates new form ManageAccount
      */
     public ManageAccount() {
         initComponents();
               getContentPane().setBackground(new Color(87, 31, 68));
+
+              String [] columnNames = {"ID", "Username", "Password", "Role"};
+                model = new DefaultTableModel(columnNames, 0);
+                jTable1.setModel(model);
+
+                loadUser();
     }
 
     /**
@@ -148,17 +169,162 @@ public class ManageAccount extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    // This will add the account
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        // Create a JDialog
+        JDialog dialog = new JDialog(this, "Add Account", true);
+        dialog.setSize(400, 300);
+        dialog.setLayout(new java.awt.GridLayout(5, 2, 10, 10));
+        dialog.setLocationRelativeTo(this);
+
+        // Create components
+        JLabel usernameLabel = new JLabel("Username:");
+        JTextField usernameField = new JTextField();
+
+        JLabel passwordLabel = new JLabel("Password:");
+        JPasswordField passwordField = new JPasswordField();
+
+        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+        JPasswordField confirmPasswordField = new JPasswordField();
+
+        JLabel roleLabel = new JLabel("Role:");
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"Admin", "User"});
+
+        JButton saveButton = new JButton("Save");
+        JButton cancelButton = new JButton("Cancel");
+
+        // Add components to the dialog
+        dialog.add(usernameLabel);
+        dialog.add(usernameField);
+        dialog.add(passwordLabel);
+        dialog.add(passwordField);
+        dialog.add(confirmPasswordLabel);
+        dialog.add(confirmPasswordField);
+        dialog.add(roleLabel);
+        dialog.add(roleComboBox);
+        dialog.add(saveButton);
+        dialog.add(cancelButton);
+
+        // Add action listeners
+        saveButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+            String role = (String) roleComboBox.getSelectedItem();
+
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "All fields are required.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (!password.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(dialog, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                RegisterService.getInstance().InsertUser(username, password, role);
+                loadUser();
+                dialog.dispose();
+            }
+        });
+
+        cancelButton.addActionListener(e -> dialog.dispose());
+
+        // Show the dialog
+        dialog.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    // This is for the edit account
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow != -1) {
+            String userID = jTable1.getValueAt(selectedRow, 0).toString();
+            String username = jTable1.getValueAt(selectedRow, 1).toString();
+            String password = jTable1.getValueAt(selectedRow, 2).toString();
+            String role = jTable1.getValueAt(selectedRow, 3).toString();
+
+            // Create a JDialog
+            JDialog dialog = new JDialog(this, "Edit Account", true);
+            dialog.setSize(400, 300);
+            dialog.setLayout(new java.awt.GridLayout(5, 2, 10, 10));
+            dialog.setLocationRelativeTo(this);
+
+            // Create components
+            JLabel usernameLabel = new JLabel("Username:");
+            JTextField usernameField = new JTextField(username);
+
+            JLabel passwordLabel = new JLabel("Password:");
+            JPasswordField passwordField = new JPasswordField(password);
+
+            JLabel roleLabel = new JLabel("Role:");
+            JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"Admin", "User"});
+            roleComboBox.setSelectedItem(role);
+
+            JButton saveButton = new JButton("Save");
+            JButton cancelButton = new JButton("Cancel");
+
+            // Add components to the dialog
+            dialog.add(usernameLabel);
+            dialog.add(usernameField);
+            dialog.add(passwordLabel);
+            dialog.add(passwordField);
+            dialog.add(roleLabel);
+            dialog.add(roleComboBox);
+            dialog.add(saveButton);
+            dialog.add(cancelButton);
+
+            // Add action listeners
+            saveButton.addActionListener(e -> {
+                String newUsername = usernameField.getText();
+                String newPassword = new String(passwordField.getPassword());
+                String newRole = (String) roleComboBox.getSelectedItem();
+
+                if (newUsername.isEmpty() || newPassword.isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "All fields are required.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    RegisterService.getInstance().updateUser(userID, newUsername, newPassword, newRole);
+                    loadUser();
+                    dialog.dispose();
+                }
+            });
+
+            cancelButton.addActionListener(e -> dialog.dispose());
+
+            // Show the dialog
+            dialog.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select an account to edit.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    // This will delete the account
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow != -1) {
+            String userID = jTable1.getValueAt(selectedRow, 0).toString();
+            String username = jTable1.getValueAt(selectedRow, 1).toString();
+
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete account: " + username + "?", "Delete Account", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Call the delete method from RegisterService
+                RegisterService.getInstance().deleteUser(userID);
+                loadUser();
+                // Refresh the table data
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select an account to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
+
+    void loadUser() {
+        // Load user data from the database and populate the table
+        userList = RegisterService.getInstance().getAllUsers();
+        model.setRowCount(0); // Clear existing rows
+
+        for (AccountModel user : userList) {
+            Object[] row = {user.getUserID(), user.getUsername(), user.getPassword(), user.getRole()};
+            model.addRow(row);
+        }
+
+    }
 
     /**
      * @param args the command line arguments
