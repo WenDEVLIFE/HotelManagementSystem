@@ -15,6 +15,7 @@ public class AdminCheckOut extends javax.swing.JFrame {
      */
     public AdminCheckOut() {
         initComponents();
+        setTitle( "All Check Out");
     }
 
     /**

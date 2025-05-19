@@ -375,8 +375,24 @@ public class AdminFrame extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    // This is for the checkoout
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow != -1) {
+            String roomID = (String) jTable1.getValueAt(selectedRow, 0);
+            String roomStatus = (String) jTable1.getValueAt(selectedRow, 1);
+            if (roomStatus.equals("Occupied")) {
+                CheckOutForm checkOutForm = new CheckOutForm(roomID);
+                checkOutForm.setVisible(true);
+                checkOutForm.setResizable(false);
+                checkOutForm.setLocationRelativeTo(null);
+                this.dispose();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Room is not occupied.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     // This will select for check in

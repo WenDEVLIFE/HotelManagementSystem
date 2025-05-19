@@ -37,12 +37,14 @@ public class LoginService {
                         adminFrame.setVisible(true);
                         adminFrame.setResizable(false);
                         adminFrame.setLocationRelativeTo(null);
+                        adminFrame.setTitle("Admin");
                         login.dispose();
                  }
                  if (role.toLowerCase().equals("user")){
                      UserFrame userFrame = new UserFrame();
                         userFrame.setVisible(true);
                         userFrame.setResizable(false);
+                     userFrame.setTitle("User Frame");
                         userFrame.setLocationRelativeTo(null);
                         login.dispose();
 

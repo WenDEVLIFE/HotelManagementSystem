@@ -15,6 +15,7 @@ public class AdminCheckIn extends javax.swing.JFrame {
      */
     public AdminCheckIn() {
         initComponents();
+        setTitle("All Check Ins");
     }
 
     /**

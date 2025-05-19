@@ -39,6 +39,8 @@ public class ManageAccount extends javax.swing.JFrame {
                 jTable1.setModel(model);
 
                 loadUser();
+
+                setTitle( "Manage Account");
     }
 
     /**
@@ -166,7 +168,13 @@ public class ManageAccount extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        AdminFrame adminFrame = new AdminFrame();
+        adminFrame.setVisible(true);
+        adminFrame.setResizable(false);
+        adminFrame.setLocationRelativeTo(null);
+        adminFrame.setTitle("Admin");
+        this.dispose();
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     // This will add the account

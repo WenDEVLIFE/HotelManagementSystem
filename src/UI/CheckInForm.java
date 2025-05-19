@@ -41,6 +41,7 @@ public class CheckInForm extends javax.swing.JFrame {
         RoomNumberID.setEnabled(false);
         RoomNumberID.setText(roomID);
         LoadAccounts();
+        setTitle( "Check In Form");
     }
 
     /**
@@ -112,13 +113,13 @@ public class CheckInForm extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText(" Date In");
+        jLabel6.setText(" Date In (YYYY-MM-DD)");
 
         dateOutField.setToolTipText("");
 
         jLabel7.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Date Out");
+        jLabel7.setText("Date Out (YYYY-MM-DD)");
 
         advancePaymentField.setToolTipText("");
         advancePaymentField.addActionListener(new java.awt.event.ActionListener() {
@@ -283,8 +284,15 @@ public class CheckInForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_balanceFieldActionPerformed
 
+    // This is for close form
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
+        AdminFrame adminFrame = new AdminFrame();
+        adminFrame.setVisible(true);
+        adminFrame.setResizable(false);
+        adminFrame.setLocationRelativeTo(null);
+        adminFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     
