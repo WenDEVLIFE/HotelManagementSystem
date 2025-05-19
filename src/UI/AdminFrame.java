@@ -398,6 +398,9 @@ public class AdminFrame extends javax.swing.JFrame {
                 javax.swing.JOptionPane.showMessageDialog(this, "Room is not occupied.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
         }
+        else{
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a room for check-out.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     // This will select for check in
@@ -416,6 +419,10 @@ public class AdminFrame extends javax.swing.JFrame {
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, "Room is not available for check-in.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
+        }
+
+         else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a room for check-in.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
