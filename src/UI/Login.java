@@ -8,8 +8,7 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 /**
  *
@@ -83,6 +82,11 @@ public class Login extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("LOGIN");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -192,6 +196,20 @@ public class Login extends javax.swing.JFrame {
             signUp.setLocationRelativeTo(null);
             this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    // this will login the user
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String username = jTextField1.getText();
+        String password = jPasswordField1.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both username and password.");
+            return;
+        }
+
+        // Call the login method from LoginService
+        database_function.LoginService.getInstance().Login(username, password);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
