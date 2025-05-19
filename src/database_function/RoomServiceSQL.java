@@ -58,4 +58,22 @@ public class RoomServiceSQL {
         
         return roomList;
     }
+
+    public void DeleteRoom(String roomID) {
+        String query = "DELETE FROM room WHERE room_id = ?";
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, roomID);
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Room deleted successfully.");
+                JOptionPane.showMessageDialog(null, "Room deleted successfully.");
+            } else {
+                System.out.println("Failed to delete room.");
+                JOptionPane.showMessageDialog(null, "Failed to delete room.");
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

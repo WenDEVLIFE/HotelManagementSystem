@@ -92,6 +92,11 @@ public class AdminFrame extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Reports");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(87, 31, 68));
         jButton3.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
@@ -274,24 +279,100 @@ public class AdminFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // This will go to manage accounts
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        ManageAccount manageAccount = new ManageAccount();
+        manageAccount.setVisible(true);
+        manageAccount.setResizable(false);
+        manageAccount.setLocationRelativeTo(null);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    // This is for jcalendar
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        // Create a JDialog
+        javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Calendar", true);
+        dialog.setSize(400, 300);
+        dialog.setLayout(new java.awt.BorderLayout());
+
+        // Get the current month and year
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int month = calendar.get(java.util.Calendar.MONTH); // 0-based (January = 0)
+        int year = calendar.get(java.util.Calendar.YEAR);
+        String[] monthNames = {"January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"};
+        String monthYear = monthNames[month] + " " + year;
+
+        // Add a label to display the month and year
+        javax.swing.JLabel monthYearLabel = new javax.swing.JLabel(monthYear, javax.swing.SwingConstants.CENTER);
+        monthYearLabel.setFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 16));
+        dialog.add(monthYearLabel, java.awt.BorderLayout.NORTH);
+
+        // Create a table for the calendar
+        String[] columnNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(columnNames, 0);
+        javax.swing.JTable calendarTable = new javax.swing.JTable(model);
+
+        // Populate the calendar
+        calendar.set(java.util.Calendar.DAY_OF_MONTH, 1);
+        int firstDayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1;
+        int daysInMonth = calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
+
+        Object[] week = new Object[7];
+        for (int i = 0; i < firstDayOfWeek; i++) {
+            week[i] = "";
+        }
+
+        for (int day = 1; day <= daysInMonth; day++) {
+            week[firstDayOfWeek] = day;
+            firstDayOfWeek++;
+            if (firstDayOfWeek == 7) {
+                model.addRow(week);
+                week = new Object[7];
+                firstDayOfWeek = 0;
+            }
+        }
+
+        if (firstDayOfWeek != 0) {
+            model.addRow(week);
+        }
+
+        // Add the table to the dialog
+        dialog.add(new javax.swing.JScrollPane(calendarTable), java.awt.BorderLayout.CENTER);
+
+        // Set dialog location and make it visible
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    // This is for the delete room
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow != -1) {
+            String roomID = (String) jTable1.getValueAt(selectedRow, 0);
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this room?", "Delete Room", javax.swing.JOptionPane.YES_NO_OPTION);
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+                RoomServiceSQL.getInstance().DeleteRoom(roomID);
+                loadRoonmData();
+            }
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a room to delete.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+    
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    // This will go to admin checklist
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+        AdminCheckIn adminCheckIn = new AdminCheckIn();
+        adminCheckIn.setVisible(true);
+        adminCheckIn.setResizable(false);
+        adminCheckIn.setLocationRelativeTo(null);
+        this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -353,6 +434,17 @@ public class AdminFrame extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "No rooms found with the given ID.", "Search Result", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    // This will navigate to reports
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        // TODO add your handling code here:
+        Report reports = new Report();
+        reports.setVisible(true);
+        reports.setResizable(false);
+        reports.setLocationRelativeTo(null);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     void loadRoonmData() {
         roomList = RoomServiceSQL.getInstance().getAllRooms();
