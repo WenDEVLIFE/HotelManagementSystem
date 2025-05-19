@@ -113,8 +113,13 @@ public class Report extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // back functions
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        AdminFrame adminFrame = new AdminFrame();
+         adminFrame.setVisible(true);
+            adminFrame.setResizable(false);
+            adminFrame.setLocationRelativeTo(null);
+            this.dispose();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /**

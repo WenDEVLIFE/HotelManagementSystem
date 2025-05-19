@@ -3,10 +3,14 @@ package database_function;
 import UI.AdminFrame;
 import UI.CheckInForm;
 import UI.CheckOutForm;
+import model.CheckInModel;
+import model.CheckOutModel;
 
 import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BookHotelSQL {
@@ -181,6 +185,153 @@ public class BookHotelSQL {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "User not found. Please check the account name.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<CheckInModel> getCheckInDetails() {
+        List<CheckInModel> checkInList = new ArrayList<>();
+        String query = "SELECT * FROM check_in_table";
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+            java.sql.ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("check_in_id");
+                String customerName = resultSet.getString("customer_name");
+                String roomNumber = resultSet.getString("room_id");
+                String noOfPersons = resultSet.getString("no_of_person");
+                String dateIn = resultSet.getString("date_in");
+                String dateOut = resultSet.getString("date_out");
+                String noOfNights = resultSet.getString("no_of_nights");
+                String advancePayment = resultSet.getString("advance_payment");
+                String balancePayment = resultSet.getString("balance");
+
+                CheckInModel checkInModel = new CheckInModel(id, customerName, roomNumber, noOfPersons, dateIn, dateOut, noOfNights, advancePayment, balancePayment);
+                checkInList.add(checkInModel);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+
+        }
+
+        return checkInList;
+
+    }
+
+    public void deleteCheckIn(int checkInId) {
+        String deleteQuery = "DELETE FROM check_in_table WHERE check_in_id = ?";
+        String reportSQL = "INSERT INTO report (description, date, time) VALUES (?, ?, ?)";
+        String updateRoomStatusSQL = "UPDATE room SET room_status = 'Available' WHERE room_id = ?";
+
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery);
+             java.sql.PreparedStatement reportStmt = connection.prepareStatement(reportSQL);
+             java.sql.PreparedStatement updateRoomStatusStmt = connection.prepareStatement(updateRoomStatusSQL)) {
+
+            // Delete check-in details
+            deleteStmt.setInt(1, checkInId);
+            int rowsAffected = deleteStmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Update room status
+                updateRoomStatusStmt.setString(1, String.valueOf(checkInId));
+                updateRoomStatusStmt.executeUpdate();
+
+                // Insert into report table
+                LocalTime currentTime = LocalTime.now();
+                LocalDate currentDate = LocalDate.now();
+                reportStmt.setString(1, "Check-in details deleted for ID " + checkInId);
+                reportStmt.setString(2, currentDate.toString());
+                reportStmt.setString(3, currentTime.toString());
+
+                int reportRowsAffected = reportStmt.executeUpdate();
+
+                if (reportRowsAffected > 0) {
+                    JOptionPane.showMessageDialog(null, "Check-in details deleted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to add report entry.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to delete check-in details.");
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    public List<CheckOutModel> getCheckOutDetails() {
+        List<CheckOutModel> checkOutList = new ArrayList<>();
+        String query = "SELECT * FROM check_out_table";
+
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+            java.sql.ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("check_out_id");
+                String guestName = resultSet.getString("guest_name");
+                String roomNumber = resultSet.getString("room_id");
+                String noOfPersons = resultSet.getString("no_of_person");
+                String dateIn = resultSet.getString("date_in");
+                String dateOut = resultSet.getString("date_out");
+                String rate = resultSet.getString("rate");
+                String totalChange = resultSet.getString("total_change");
+                String otherCharges = resultSet.getString("other_charges");
+                String total = resultSet.getString("total");
+                String amount = resultSet.getString("amount");
+                String noOfDays = resultSet.getString("no_of_days");
+
+                CheckOutModel checkOutModel = new CheckOutModel(
+                        id, guestName, roomNumber, noOfPersons, dateIn, dateOut,
+                        rate, totalChange, otherCharges, total, amount, noOfDays
+                );
+                checkOutList.add(checkOutModel);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+
+        return checkOutList;
+    }
+
+    public void deleteCheckOut(String roomNumber) {
+        String deleteQuery = "DELETE FROM check_out_table WHERE room_id = ?";
+        String reportSQL = "INSERT INTO report (description, date, time) VALUES (?, ?, ?)";
+        String updateRoomStatusSQL = "UPDATE room SET room_status = 'Available' WHERE room_id = ?";
+
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery);
+             java.sql.PreparedStatement reportStmt = connection.prepareStatement(reportSQL);
+             java.sql.PreparedStatement updateRoomStatusStmt = connection.prepareStatement(updateRoomStatusSQL)) {
+
+            // Delete check-out details
+            deleteStmt.setString(1, roomNumber);
+            int rowsAffected = deleteStmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Update room status
+                updateRoomStatusStmt.setString(1, roomNumber);
+                updateRoomStatusStmt.executeUpdate();
+
+                // Insert into report table
+                LocalTime currentTime = LocalTime.now();
+                LocalDate currentDate = LocalDate.now();
+                reportStmt.setString(1, "Check-out details deleted for room number " + roomNumber);
+                reportStmt.setString(2, currentDate.toString());
+                reportStmt.setString(3, currentTime.toString());
+
+                int reportRowsAffected = reportStmt.executeUpdate();
+
+                if (reportRowsAffected > 0) {
+                    JOptionPane.showMessageDialog(null, "Check-out details deleted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to add report entry.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to delete check-out details.");
             }
         } catch (java.sql.SQLException e) {
             e.printStackTrace();

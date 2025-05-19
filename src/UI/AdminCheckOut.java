@@ -4,7 +4,14 @@
  */
 package UI;
 
+import database_function.BookHotelSQL;
+import model.CheckOutModel;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -12,6 +19,8 @@ import java.awt.*;
  */
 public class AdminCheckOut extends javax.swing.JFrame {
 
+    List <CheckOutModel> checkOutList = new ArrayList<>();
+    DefaultTableModel model;
     /**
      * Creates new form AdminCheckOut
      */
@@ -19,6 +28,10 @@ public class AdminCheckOut extends javax.swing.JFrame {
         initComponents();
         setTitle( "All Check Out");
         getContentPane().setBackground(new Color(87, 31, 68));
+        String [] columnNames = {"Room ID","Guest Name", "Date In", "Date Out", "Total"};
+        model = new DefaultTableModel(columnNames, 0);
+        jTable2.setModel(model);
+        loadData();
     }
 
     /**
@@ -141,20 +154,50 @@ public class AdminCheckOut extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // Go to Check IN
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+       AdminCheckIn adminCheckIn = new AdminCheckIn();
+        adminCheckIn.setVisible(true);
+        adminCheckIn.setResizable(false);
+        adminCheckIn.setLocationRelativeTo(null);
+        adminCheckIn.setTitle("Check In");
+        this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    /// Logout Function
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            Login login = new Login();
+            login.setVisible(true);
+            login.setResizable(false);
+            login.setLocationRelativeTo(null);
+            this.dispose();
+            JOptionPane.showMessageDialog(this, "Logout successful.");
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    // Back
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
+        AdminFrame adminFrame = new AdminFrame();
+        adminFrame.setVisible(true);
+        adminFrame.setResizable(false);
+        adminFrame.setLocationRelativeTo(null);
+        adminFrame.setTitle("Admin");
+        this.dispose();
     }//GEN-LAST:event_jButton12ActionPerformed
 
+    // This will delete the check out
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
+   int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow != -1) {
+            String roomNumber = (String) jTable2.getValueAt(selectedRow, 0);
+            BookHotelSQL.getInstance().deleteCheckOut(roomNumber);
+            model.removeRow(selectedRow);
+            JOptionPane.showMessageDialog(this, "Check out deleted successfully.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a check out to delete.");
+        }
     }//GEN-LAST:event_jButton13ActionPerformed
 
     /**
@@ -190,6 +233,13 @@ public class AdminCheckOut extends javax.swing.JFrame {
                 new AdminCheckOut().setVisible(true);
             }
         });
+    }
+
+    void loadData(){
+        checkOutList = BookHotelSQL.getInstance().getCheckOutDetails();
+        for (CheckOutModel checkOut : checkOutList) {
+            model.addRow(new Object[]{checkOut.getRoomNumber(), checkOut.getGuestName(), checkOut.getDateIn(), checkOut.getDateOut(), checkOut.getTotal()});
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

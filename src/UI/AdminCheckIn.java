@@ -4,7 +4,14 @@
  */
 package UI;
 
+import database_function.BookHotelSQL;
+import model.CheckInModel;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -12,6 +19,8 @@ import java.awt.*;
  */
 public class AdminCheckIn extends javax.swing.JFrame {
 
+    List <CheckInModel> checkInList = new ArrayList<>();
+    DefaultTableModel model;
     /**
      * Creates new form AdminCheckIn
      */
@@ -19,6 +28,11 @@ public class AdminCheckIn extends javax.swing.JFrame {
         initComponents();
         setTitle("All Check Ins");
         getContentPane().setBackground(new Color(87, 31, 68));
+        String [] columnNames = {"Room ID", "Customer Name","Date In", "Date Out", "Total"};
+        model = new DefaultTableModel(columnNames, 0);
+        jTable2.setModel(model);
+        loadCheckIns();
+
     }
 
     /**
@@ -43,7 +57,7 @@ public class AdminCheckIn extends javax.swing.JFrame {
         jButton11.setBackground(new java.awt.Color(87, 31, 68));
         jButton11.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jButton11.setForeground(new java.awt.Color(255, 255, 255));
-        jButton11.setText("View Check In");
+        jButton11.setText("View Check Out");
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton11ActionPerformed(evt);
@@ -141,20 +155,53 @@ public class AdminCheckIn extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /// This will view the check out
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        AdminCheckOut adminCheckOut = new AdminCheckOut();
+        adminCheckOut.setVisible(true);
+        adminCheckOut.setResizable(false);
+        adminCheckOut.setLocationRelativeTo(null);
+        adminCheckOut.setTitle("Check Out");
+        this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    // Logiout
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            Login login = new Login();
+            login.setVisible(true);
+            login.setResizable(false);
+            login.setLocationRelativeTo(null);
+            this.dispose();
+            JOptionPane.showMessageDialog(this, "Logout successful.");
+        }
+
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    // back
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
+       AdminFrame adminFrame = new AdminFrame();
+        adminFrame.setVisible(true);
+        adminFrame.setResizable(false);
+        adminFrame.setLocationRelativeTo(null);
+        adminFrame.setTitle("Admin");
+        this.dispose();
     }//GEN-LAST:event_jButton12ActionPerformed
 
+    //This will delete the check In
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
+
+        int selectedRow = jTable2.getSelectedRow();
+
+        if (selectedRow != -1) {
+            int checkInId = (int) jTable2.getValueAt(selectedRow, 0);
+            BookHotelSQL.getInstance().deleteCheckIn(checkInId);
+            model.removeRow(selectedRow);
+            JOptionPane.showMessageDialog(this, "Check In deleted successfully.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a check in to delete.");
+        }
     }//GEN-LAST:event_jButton13ActionPerformed
 
     /**
@@ -190,6 +237,15 @@ public class AdminCheckIn extends javax.swing.JFrame {
                 new AdminCheckIn().setVisible(true);
             }
         });
+
+    }
+
+    private void loadCheckIns() {
+        checkInList = BookHotelSQL.getInstance().getCheckInDetails();
+        for (CheckInModel checkIn : checkInList) {
+            Object[] row = {checkIn.getId(), checkIn.getCustomerName() ,checkIn.getDateIn(), checkIn.getDateOut(), checkIn.getBalancePayment()};
+            model.addRow(row);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
