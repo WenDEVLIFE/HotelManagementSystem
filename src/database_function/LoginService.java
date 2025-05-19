@@ -41,10 +41,10 @@ public class LoginService {
                         login.dispose();
                  }
                  if (role.toLowerCase().equals("user")){
-                     UserFrame userFrame = new UserFrame();
+                     UserFrame userFrame = new UserFrame(userId);
                         userFrame.setVisible(true);
                         userFrame.setResizable(false);
-                     userFrame.setTitle("User Frame");
+                     userFrame.setTitle("User - My Check In Details");
                         userFrame.setLocationRelativeTo(null);
                         login.dispose();
 

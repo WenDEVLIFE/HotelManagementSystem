@@ -337,4 +337,80 @@ public class BookHotelSQL {
             e.printStackTrace();
         }
     }
+
+    public List<CheckInModel> getCheckInDetailsByUser(int userId) {
+        List<CheckInModel> checkInList = new ArrayList<>();
+        String query = "SELECT * FROM check_in_table WHERE user_id = ?";
+
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            java.sql.ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("check_in_id");
+                String customerName = resultSet.getString("customer_name");
+                String roomNumber = resultSet.getString("room_id");
+                String noOfPersons = resultSet.getString("no_of_person");
+                String dateIn = resultSet.getString("date_in");
+                String dateOut = resultSet.getString("date_out");
+                String noOfNights = resultSet.getString("no_of_nights");
+                String advancePayment = resultSet.getString("advance_payment");
+                String balancePayment = resultSet.getString("balance");
+
+                CheckInModel checkInModel = new CheckInModel(id, customerName, roomNumber, noOfPersons, dateIn, dateOut, noOfNights, advancePayment, balancePayment);
+                checkInList.add(checkInModel);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+
+        return  checkInList;
+    }
+
+    public boolean changeUserPassword(int userId, String newPassword) {
+        String updateQuery = "UPDATE users SET password = ? WHERE user_id = ?";
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+            statement.setString(1, newPassword);
+            statement.setInt(2, userId);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<CheckOutModel> getCheckOutDetailsByUser(int userId) {
+        List<CheckOutModel> checkOutList = new ArrayList<>();
+        String query = "SELECT * FROM check_out_table WHERE user_id = ?";
+
+        try (java.sql.Connection connection = MYSQLiteConnection.getConnection();
+             java.sql.PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            java.sql.ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("check_out_id");
+                String guestName = resultSet.getString("guest_name");
+                String roomNumber = resultSet.getString("room_id");
+                String noOfPersons = resultSet.getString("no_of_person");
+                String dateIn = resultSet.getString("date_in");
+                String dateOut = resultSet.getString("date_out");
+                String rate = resultSet.getString("rate");
+                String totalChange = resultSet.getString("total_change");
+                String otherCharges = resultSet.getString("other_charges");
+                String total = resultSet.getString("total");
+                String amount = resultSet.getString("amount");
+                String noOfDays = resultSet.getString("no_of_days");
+
+                CheckOutModel checkOutModel = new CheckOutModel(id, guestName, roomNumber, noOfPersons, dateIn, dateOut, rate, totalChange, otherCharges, total, amount, noOfDays);
+                checkOutList.add(checkOutModel);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return  checkOutList;
+    }
 }

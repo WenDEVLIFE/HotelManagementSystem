@@ -74,7 +74,7 @@ public class AdminCheckOut extends javax.swing.JFrame {
         jButton11.setBackground(new java.awt.Color(87, 31, 68));
         jButton11.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jButton11.setForeground(new java.awt.Color(255, 255, 255));
-        jButton11.setText("View Check Out");
+        jButton11.setText("View Check In");
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton11ActionPerformed(evt);

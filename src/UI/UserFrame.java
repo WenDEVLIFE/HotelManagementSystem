@@ -4,7 +4,14 @@
  */
 package UI;
 
+import database_function.BookHotelSQL;
+import model.CheckInModel;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -12,12 +19,21 @@ import java.awt.Color;
  */
 public class UserFrame extends javax.swing.JFrame {
 
+    static int userId;
+    List<CheckInModel> checkInModelList = new ArrayList<>();
+    DefaultTableModel tableModel;
     /**
      * Creates new form UserFrame
      */
-    public UserFrame() {
+    public UserFrame(int userId) {
+        UserFrame.userId = userId;
         initComponents();
               getContentPane().setBackground(new Color(87, 31, 68));
+              String [] columnNames = {"Room ID", "Date In", "Date Out", "Total"};
+                tableModel = new DefaultTableModel(columnNames, 0);
+                jTable2.setModel(tableModel);
+                loadCheckInData();
+                setTitle("User - My Check In Details");
     }
 
     /**
@@ -176,16 +192,63 @@ public class UserFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    // This will navigate to check out
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+     UserCheckOut userCheckOut = new UserCheckOut(userId);
+        userCheckOut.setVisible(true);
+        userCheckOut.setResizable(false);
+        userCheckOut.setLocationRelativeTo(null);
+        this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            Login login = new Login();
+            login.setVisible(true);
+            login.setResizable(false);
+            login.setLocationRelativeTo(null);
+            this.dispose();
+            JOptionPane.showMessageDialog(this, "Logout successful.");
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel labelNewPassword = new JLabel("Enter New Password:");
+        JPasswordField passwordFieldNew = new JPasswordField(10);
+        JLabel labelConfirmPassword = new JLabel("Confirm New Password:");
+        JPasswordField passwordFieldConfirm = new JPasswordField(10);
+        JButton submitButton = new JButton("Change Password");
+
+        panel.add(labelNewPassword);
+        panel.add(passwordFieldNew);
+        panel.add(labelConfirmPassword);
+        panel.add(passwordFieldConfirm);
+        panel.add(submitButton);
+
+        submitButton.addActionListener(e -> {
+            String newPassword = new String(passwordFieldNew.getPassword());
+            String confirmPassword = new String(passwordFieldConfirm.getPassword());
+
+            if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
+                JOptionPane.showMessageDialog(panel, "Password fields cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (!newPassword.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(panel, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Logic to update the password in the database
+                boolean isPasswordChanged = BookHotelSQL.getInstance().changeUserPassword(userId, newPassword);
+                if (isPasswordChanged) {
+                    JOptionPane.showMessageDialog(panel, "Password changed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(panel, "Failed to change password.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        JOptionPane.showMessageDialog(this, panel, "Change Password", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     /**
@@ -218,9 +281,17 @@ public class UserFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UserFrame().setVisible(true);
+                new UserFrame(userId).setVisible(true);
             }
         });
+    }
+
+    private void loadCheckInData() {
+        checkInModelList = BookHotelSQL.getInstance().getCheckInDetailsByUser(userId);
+        for (CheckInModel checkIn : checkInModelList) {
+            Object[] row = {checkIn.getId(),checkIn.getDateIn(), checkIn.getDateOut(), checkIn.getBalancePayment()};
+            tableModel.addRow(row);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
