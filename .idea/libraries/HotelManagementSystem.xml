@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="HotelManagementSystem">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mysql-connector-j-9.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/flatlaf-3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
