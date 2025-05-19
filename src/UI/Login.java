@@ -208,7 +208,8 @@ public class Login extends javax.swing.JFrame {
         }
 
         // Call the login method from LoginService
-        database_function.LoginService.getInstance().Login(username, password);
+        database_function.LoginService.getInstance().Login(username, password, this);
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
